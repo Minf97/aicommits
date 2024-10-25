@@ -5,7 +5,13 @@ const commitTypeFormats: Record<CommitType, string> = {
 	conventional: '<type>(<scope>): <commit message>',
 };
 const specifyCommitFormat = (type: CommitType) =>
-	`The output response must be in format:\n${commitTypeFormats[type]}; Scope should be the relative page or components. what is relative page or components? We usually consider that 'page' is behide the '[locale]', and 'component' is behide 'components' or '_components'. For example, 'src/[locale]/web3-etf' which page is 'web3-etf'. And 'src/[locale]/web3-etf/_components/api.ts' which component is 'web3-etf_api.ts'`;
+	`The output response must be in format:\n${commitTypeFormats[type]}; Scope should be the relative page or components.
+what is relative page or components? We usually consider that 'page' is behind the '[locale]',
+and 'component' is behide 'components' or '_components'.
+For example,
+'src/[locale]/web3-etf' which page is 'web3-etf'.
+And 'src/[locale]/web3-etf/_components/api.ts' which relative component is 'web3-etf_api.ts'. Scope is 'web3-etf_api.ts'.
+And 'src/components/web3-etf/head.tsx' which relative component is 'web3-etf_head.tsx'. Scope is 'web3-etf_head.tsx'`;
 
 const commitTypes: Record<CommitType, string> = {
 	'': '',
