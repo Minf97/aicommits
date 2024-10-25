@@ -16,6 +16,7 @@ import {
 import { getConfig } from '../utils/config.js';
 import { generateCommitMessage } from '../utils/openai.js';
 import { KnownError, handleCliError } from '../utils/error.js';
+import { log } from 'console';
 
 export default async (
 	generate: number | undefined,
@@ -58,7 +59,10 @@ export default async (
 				env.https_proxy || env.HTTPS_PROXY || env.http_proxy || env.HTTP_PROXY,
 			generate: generate?.toString(),
 			type: commitType?.toString(),
+			locale: 'zh-Hans'
 		});
+
+		log(config, "config....")
 
 		const s = spinner();
 		s.start('The AI is analyzing your changes');

@@ -5,6 +5,7 @@ import ini from 'ini';
 import type { TiktokenModel } from '@dqbd/tiktoken';
 import { fileExists } from './fs.js';
 import { KnownError } from './error.js';
+import { log } from 'console';
 
 const commitTypes = ['', 'conventional'] as const;
 
@@ -72,7 +73,8 @@ const configParsers = {
 		return type as CommitType;
 	},
 	proxy(url?: string) {
-		if (!url || url.length === 0) {
+		log(url, 'url......!!!');
+		if (!url || url.length === 0 || url === 'undefined') {
 			return undefined;
 		}
 

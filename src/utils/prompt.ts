@@ -2,10 +2,10 @@ import type { CommitType } from './config.js';
 
 const commitTypeFormats: Record<CommitType, string> = {
 	'': '<commit message>',
-	conventional: '<type>(<optional scope>): <commit message>',
+	conventional: '<type>(<scope>): <commit message>',
 };
 const specifyCommitFormat = (type: CommitType) =>
-	`The output response must be in format:\n${commitTypeFormats[type]}`;
+	`The output response must be in format:\n${commitTypeFormats[type]}; Scope should be the relative page or components`;
 
 const commitTypes: Record<CommitType, string> = {
 	'': '',

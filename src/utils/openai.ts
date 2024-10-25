@@ -12,6 +12,8 @@ import createHttpsProxyAgent from 'https-proxy-agent';
 import { KnownError } from './error.js';
 import type { CommitType } from './config.js';
 import { generatePrompt } from './prompt.js';
+import { log } from 'console';
+import axios from 'axios';
 
 const httpsPost = async (
 	hostname: string,
@@ -39,7 +41,7 @@ const httpsPost = async (
 					'Content-Length': Buffer.byteLength(postContent),
 				},
 				timeout,
-				agent: proxy ? createHttpsProxyAgent(proxy) : undefined,
+				// agent: proxy ? createHttpsProxyAgent(proxy) : undefined,
 			},
 			(response) => {
 				const body: Buffer[] = [];
@@ -73,36 +75,57 @@ const createChatCompletion = async (
 	timeout: number,
 	proxy?: string
 ) => {
-	const { response, data } = await httpsPost(
-		'api.openai.com',
-		'/v1/chat/completions',
-		{
-			Authorization: `Bearer ${apiKey}`,
-		},
-		json,
-		timeout,
-		proxy
-	);
+	console.log(apiKey, 'apiKey??');
 
-	if (
-		!response.statusCode ||
-		response.statusCode < 200 ||
-		response.statusCode > 299
-	) {
-		let errorMessage = `OpenAI API Error: ${response.statusCode} - ${response.statusMessage}`;
+	// const { response, data } = await httpsPost(
+	// 	'api.openai.com',
+	// 	'/v1/chat/completions',
+	// 	{
+	// 		Authorization: `Bearer ${apiKey}`,
+	// 	},
+	// 	json,
+	// 	timeout,
+	// 	proxy
+	// );
+	try {
+		const res = await axios.post(
+			'http://125.122.25.32:3001/v1/chat/completions',
+			json,
+			{
+				headers: {
+					Authorization: `Bearer ${apiKey}`,
+				},
+			}
+		);
+		log(res.data, "res.data..")
+		return res.data
+	}
+	catch(err) {
+		console.log(err, ".??errs");
 
-		if (data) {
-			errorMessage += `\n\n${data}`;
-		}
-
-		if (response.statusCode === 500) {
-			errorMessage += '\n\nCheck the API status: https://status.openai.com';
-		}
-
-		throw new KnownError(errorMessage);
 	}
 
-	return JSON.parse(data) as CreateChatCompletionResponse;
+
+
+	// if (
+	// 	!response.statusCode ||
+	// 	response.statusCode < 200 ||
+	// 	response.statusCode > 299
+	// ) {
+	// 	let errorMessage = `OpenAI API Error: ${response.statusCode} - ${response.statusMessage}`;
+
+	// 	if (data) {
+	// 		errorMessage += `\n\n${data}`;
+	// 	}
+
+	// 	if (response.statusCode === 500) {
+	// 		errorMessage += '\n\nCheck the API status: https://status.openai.com';
+	// 	}
+
+	// 	throw new KnownError(errorMessage);
+	// }
+
+	// return JSON.parse(data) as CreateChatCompletionResponse;
 };
 
 const sanitizeMessage = (message: string) =>
@@ -167,6 +190,8 @@ export const generateCommitMessage = async (
 			timeout,
 			proxy
 		);
+
+		log(completion, 'completion??');
 
 		return deduplicateMessages(
 			completion.choices
